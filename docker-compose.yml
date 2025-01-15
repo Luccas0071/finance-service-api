@@ -2,48 +2,55 @@ services:
   app:
     build:
       context: .
-      dockerfile: Docker/DockerfileDev
+      dockerfile: Docker/Dockerfile
     container_name: app-service-finance
     restart: always
     volumes:
       - .:/var/www
     ports:
-      - 3001:3001
-      # - 5000:5000
-      # - 9230:9229
+      - '3000:3000'
     env_file:
       - .env
-    # depends_on:
-    # - mysql
+    depends_on:
+      - mysql
     # - mongo
     command: npm run start:dev
 
   mysql:
     image: mysql
     container_name: db-service-finance
-    restart: unless-stopped
+    restart: always
     volumes:
       - /opt/mysql_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: configuration
-      MYSQL_USER: userAdmin
-      MYSQL_PASSWORD: acesso
-      MYSQL_ROOT_PASSWORD: acesso
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
     ports:
       - 3307:3306
 
   mongo:
     image: mongo
     container_name: mongo-service-finance
-    restart: unless-stopped
+    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
     ports:
       - 27017:27017
     volumes:
-      - /opt/mongo_data:/data/db
+      - /opt/mongo_data:/var/lib/mongo
 
-networks:
-  default:
-    name: madeiramadeira
+  redis:
+    image: redis:latest
+    container_name: redis-service-finance
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - /opt/redis_data:/data
+    command: ['redis-server', '--appendonly', 'yes']
+# networks:
+#   default:
+#     name: madeiramadeira

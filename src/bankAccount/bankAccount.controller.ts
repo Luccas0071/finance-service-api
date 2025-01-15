@@ -7,27 +7,31 @@ import {
   Post,
   // Put,
 } from '@nestjs/common';
-// import { CreateBankAccountDto } from './dto/create-bank-account.dto';
+import { CreateBankAccountDto } from './dto/create-bank-account.dto';
 import { BankAccountService } from './bankAccount.service';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { MyModel } from './my.model.interface';
+// import { InjectModel } from '@nestjs/mongoose';
+// import { Model } from 'mongoose';
+// import { MyModel } from './my.model.interface';
 
 @Controller('bankAccount')
 export class BankAccountController {
   constructor(
     private bankAccountService: BankAccountService,
-    @InjectModel('MyModel')
-    private readonly myModel: Model<MyModel>,
+    // @InjectModel('MyModel')
+    // private readonly myModel: Model<MyModel>,
   ) {}
 
   @Post()
-  async create(@Body() data: any) {
+  async create(@Body() createBankAccountDto: CreateBankAccountDto) {
+    console.log(' ======== CREATE ========');
+    console.log(createBankAccountDto);
+
+    // return data;
     // console.log(createBankAccountDto);
-    const createdData = new this.myModel(data);
-    return await createdData.save();
-    // const response = this.bankAccountService.create(createBankAccountDto);
-    // return response;
+    // const createdData = new this.myModel(data);
+    // return await createdData.save();
+    const response = this.bankAccountService.create(createBankAccountDto);
+    return response;
   }
 
   @Get()

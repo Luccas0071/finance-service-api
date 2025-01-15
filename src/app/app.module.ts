@@ -6,8 +6,8 @@ import { BankAccountModule } from 'src/bankAccount/bankAccount.module';
 // import { PostgresConfigService } from 'src/config/postgres.config.service';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from 'src/user/user.module';
-import { typeOrmMySqlConfigAsync } from 'src/config/database/typeorm.mysql.config';
-import { typeOrmMongoConfigAsync } from 'src/config/database/typeorm.mongo.config';
+import { typeOrmMySqlConfigAsync } from 'src/config/database/mySql/typeorm.mysql.config';
+// import { typeOrmMongoConfigAsync } from 'src/config/database/mongoDb/typeorm.mongo.config';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import { typeOrmMongoConfigAsync } from 'src/config/database/typeorm.mongo.confi
     // }),
 
     TypeOrmModule.forRootAsync(typeOrmMySqlConfigAsync),
-    TypeOrmModule.forRootAsync(typeOrmMongoConfigAsync),
+    // TypeOrmModule.forRootAsync(typeOrmMongoConfigAsync),
     BankAccountModule,
     UserModule,
   ],

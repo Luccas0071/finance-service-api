@@ -3,31 +3,23 @@ import {
   TypeOrmModuleAsyncOptions,
   TypeOrmModuleOptions,
 } from '@nestjs/typeorm';
+import { BankAccount } from 'src/bankAccount/entities/bankAccount.entity';
+import { Card } from 'src/bankAccount/entities/card.entity';
+import { User } from 'src/user/entities/user.entity';
 import { DataSourceOptions, LoggerOptions } from 'typeorm';
 
 export default class TypeOrmConfig {
   static getOrmConfig(configService: ConfigService): TypeOrmModuleOptions {
-    let host = configService.get('DB_HOST') || 'localhost';
-    let dbName = configService.get('DB_NAME');
-    const env = configService.get('APPLICATION_ENV');
-    if (env == 'test') {
-      host = 'localhost';
-      dbName = 'service-omni-hub-test';
-    }
     return {
       name: 'default',
       type: configService.get('DB_TYPE'),
-      host,
+      host: configService.get('DB_HOST'),
       port: configService.get('DB_PORT') || 3306,
       username: configService.get('DB_USER'),
       password: configService.get('DB_PASS'),
-      database: dbName,
-      entities: [
-        __dirname + '/../bankAccount/entities/*.entity{.ts,.js',
-        __dirname + '/../user/entities/*.entity{.ts,.js',
-      ],
-      migrations: [__dirname + '/../database/mysql/migrations/*{.ts,.js}'],
-      migrationsRun: true,
+      database: configService.get('DB_NAME'),
+      entities: [BankAccount, Card, User],
+      autoLoadEntities: configService.get<string>('DB_LOAD_ENT') === 'true',
       synchronize: configService.get<string>('DB_SYNC') === 'true',
       logging: configService.get<LoggerOptions>('DB_LOG') || false,
     } as DataSourceOptions;
