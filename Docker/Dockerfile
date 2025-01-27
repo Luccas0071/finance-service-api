@@ -1,5 +1,5 @@
 # Usa uma imagem base do Node.js
-FROM node:18
+FROM node:20
 
 # Define o diretório de trabalho no container
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 #RUN npm run build
 
 # Expõe a porta que o NestJS utiliza
-EXPOSE 3001
+EXPOSE 3000
 
 # Comando para iniciar o aplicativo (produção)
-#ENTRYPOINT npm run start:dev
+ENTRYPOINT npm run start:dev

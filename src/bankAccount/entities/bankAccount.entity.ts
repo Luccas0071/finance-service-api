@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { ACCOUNT_TYPE } from '../enums/account_type.type';
 import { HOLDER_TYPE } from '../enums/holder_type.type';
-import { Card } from './card.entity';
+import { Card } from 'src/card/entities/card.entity';
 
 @Entity()
 export class BankAccount {

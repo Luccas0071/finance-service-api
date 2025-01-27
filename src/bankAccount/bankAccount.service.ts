@@ -1,13 +1,12 @@
 import { BadRequestException, Inject } from '@nestjs/common';
 import { CreateBankAccountDto } from './dto/create-bank-account.dto';
-import { IBankAccountRepository } from './repositories/bankAccount.interface';
-import { I_BANK_ACCOUNT_REPOSITORY } from '../common/constant';
-// import { UpdateBankAccountDto } from './dto/update-bank-account';
+import { UpdateBankAccountDto } from './dto/update-bank-account';
+import { BankAccountRepository } from './repositories/bankAccount.repository';
 
 export class BankAccountService {
   constructor(
-    @Inject(I_BANK_ACCOUNT_REPOSITORY)
-    private readonly bankAccountRepository: IBankAccountRepository,
+    @Inject(BankAccountRepository)
+    private readonly bankAccountRepository: BankAccountRepository,
   ) {}
 
   async create(createBankAccountDto: CreateBankAccountDto) {
@@ -17,31 +16,27 @@ export class BankAccountService {
       console.log(error);
       throw new BadRequestException('Erro ao criar conta bancária!');
     }
-    return {
-      status: 201,
-      message: 'Conta bancária cadastrada com sucesso !',
-    };
   }
 
   async findAll() {
     return this.bankAccountRepository.findAll();
   }
 
-  // async find(id: string) {
-  //   const bankAccount = await this.bankAccountRepository.findById(id);
-  //   if (!bankAccount) {
-  //     throw new Error('Conta bancaria não encontrado!');
-  //   }
-  //   return bankAccount;
-  // }
+  async findById(id: string) {
+    const bankAccount = await this.bankAccountRepository.findById(id);
+    if (!bankAccount) {
+      throw new Error('Conta bancaria não encontrado!');
+    }
+    return bankAccount;
+  }
 
-  // async update(id: string, updateBankAccountDto: UpdateBankAccountDto) {
-  //   await this.find(id);
-  //   return this.bankAccountRepository.update(id, updateBankAccountDto);
-  // }
+  async update(id: string, bankAccount: UpdateBankAccountDto) {
+    await this.findById(id);
+    return this.bankAccountRepository.update(id, bankAccount);
+  }
 
-  // async remove(id: string) {
-  //   await this.find(id);
-  //   return this.bankAccountRepository.delete(id);
-  // }
+  async remove(id: string) {
+    await this.findById(id);
+    return this.bankAccountRepository.delete(id);
+  }
 }

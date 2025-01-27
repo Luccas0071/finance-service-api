@@ -1,27 +1,15 @@
 import { Module } from '@nestjs/common';
 
-import { I_BANK_ACCOUNT_REPOSITORY } from '../common/constant';
 import { BankAccountRepository } from './repositories/bankAccount.repository';
 import { BankAccountController } from './bankAccount.controller';
 import { BankAccountService } from './bankAccount.service';
 import { BankAccount } from './entities/bankAccount.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Card } from './entities/card.entity';
-// import { MySchema } from './my.schema';
-// import { MongooseModule } from '@nestjs/mongoose';
+import { Card } from 'src/card/entities/card.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([BankAccount, Card]),
-    // MongooseModule.forFeature([{ name: 'MyModel', schema: MySchema }]),
-  ],
+  imports: [TypeOrmModule.forFeature([BankAccount, Card])],
   controllers: [BankAccountController],
-  providers: [
-    BankAccountService,
-    {
-      provide: I_BANK_ACCOUNT_REPOSITORY,
-      useClass: BankAccountRepository,
-    },
-  ],
+  providers: [BankAccountService, BankAccountRepository],
 })
 export class BankAccountModule {}

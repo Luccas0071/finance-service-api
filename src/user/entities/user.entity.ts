@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserPermission } from './userPermission.entity copy';
+import { UserPermission } from './userPermission.entity';
 
 @Entity()
 export class User {
@@ -15,15 +15,18 @@ export class User {
   id: string;
 
   @Column()
+  name: string;
+
+  @Column()
   email: string;
 
   @Column()
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   remember_token: string;
 
-  @Column()
+  @Column({ nullable: true })
   email_verified_at: Date;
 
   @OneToMany(() => UserPermission, (userPermission) => userPermission.user_id, {

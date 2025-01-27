@@ -2,18 +2,17 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { CreateBankAccountDto } from '../dto/create-bank-account.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IBankAccountRepository } from './bankAccount.interface';
 import { BankAccount } from '../entities/bankAccount.entity';
 
 @Injectable()
-export class BankAccountRepository implements IBankAccountRepository {
+export class BankAccountRepository {
   constructor(
     @InjectRepository(BankAccount)
     private readonly bankAccountRepository: Repository<BankAccount>,
   ) {}
 
   async create(bankAccount: CreateBankAccountDto) {
-    return this.bankAccountRepository.save(bankAccount);
+    return await this.bankAccountRepository.save(bankAccount);
   }
 
   async findAll() {
@@ -21,18 +20,22 @@ export class BankAccountRepository implements IBankAccountRepository {
   }
 
   async findById(id: string) {
-    return this.bankAccountRepository.findOne({
+    return await this.bankAccountRepository.findOne({
       where: { id },
       relations: ['cards'],
     });
   }
 
-  //   async update(id: string, data: BankAccount): Promise<bank_accounts> {
-  //     // return this.prisma.bank_accounts.update({
-  //     //   where: { id },
-  //     //   data,
-  //     // });
-  //   }
+  async update(id: string, data: Partial<BankAccount>) {
+    await this.bankAccountRepository.update({ id }, data);
+    const updatedBankAccount = await this.bankAccountRepository.findOneBy({
+      id,
+    });
+    if (!updatedBankAccount) {
+      throw new Error('Conta Bancária não encontrado');
+    }
+    return updatedBankAccount;
+  }
 
   async delete(id: string) {
     const bankAccount = await this.findById(id);

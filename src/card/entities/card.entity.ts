@@ -8,8 +8,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { BankAccount } from './bankAccount.entity';
 import { CARD_TYPE } from '../enums/card_type.type';
+import { BankAccount } from 'src/bankAccount/entities/bankAccount.entity';
 
 @Entity()
 export class Card {
