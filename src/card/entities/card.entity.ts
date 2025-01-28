@@ -5,11 +5,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { CARD_TYPE } from '../enums/card_type.type';
 import { BankAccount } from 'src/bankAccount/entities/bankAccount.entity';
+import { Transaction } from 'src/transaction/entities/transaction.entity';
 
 @Entity()
 export class Card {
@@ -36,7 +38,12 @@ export class Card {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'bank_account_id' })
-  bank_account_id: BankAccount;
+  bankAccount: BankAccount;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.card, {
+    cascade: true,
+  })
+  transactions: Transaction[];
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;

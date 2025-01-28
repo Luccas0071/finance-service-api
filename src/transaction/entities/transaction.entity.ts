@@ -2,6 +2,10 @@ import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -12,6 +16,7 @@ import { TRANSACTION_METOD } from '../enums/transaction_metod.enum';
 import { Card } from 'src/card/entities/card.entity';
 import { BankAccount } from 'src/bankAccount/entities/bankAccount.entity';
 
+@Entity()
 export class Transaction {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -20,7 +25,7 @@ export class Transaction {
   identification: string;
 
   @Column()
-  date: Date;
+  date?: Date;
 
   @Column({ type: 'float', nullable: true })
   value: number;
@@ -43,13 +48,54 @@ export class Transaction {
   @Column({ type: 'enum', enum: TRANSACTION_METOD, nullable: true })
   metod: TRANSACTION_METOD;
 
-  transaction_id: Transaction;
+  @ManyToOne(
+    () => Transaction,
+    (transaction) => transaction.childTransactions,
+    {
+      onDelete: 'SET NULL',
+      nullable: true,
+    },
+  )
+  @JoinColumn({ name: 'transaction_id' })
+  parentTransaction?: Transaction;
 
-  card_id: Card;
+  @OneToMany(
+    () => Transaction,
+    (transaction) => transaction.parentTransaction,
+    {
+      cascade: true,
+    },
+  )
+  childTransactions?: Transaction[];
 
-  source_bank_account_id: BankAccount;
+  @ManyToOne(() => Card, (card) => card.transactions, {
+    onDelete: 'RESTRICT',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'card_id' })
+  card?: Card;
 
-  destination_bank_account_id: BankAccount;
+  @ManyToOne(
+    () => BankAccount,
+    (bankAccount) => bankAccount.sourceTransactions,
+    {
+      onDelete: 'RESTRICT',
+      onUpdate: 'CASCADE',
+    },
+  )
+  @JoinColumn({ name: 'source_bank_account_id' })
+  sourceBankAccount?: BankAccount;
+
+  @ManyToOne(
+    () => BankAccount,
+    (bankAccount) => bankAccount.destinationTransactions,
+    {
+      onDelete: 'RESTRICT',
+      onUpdate: 'CASCADE',
+    },
+  )
+  @JoinColumn({ name: 'destination_bank_account_id' })
+  destinationBankAccount?: BankAccount;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;

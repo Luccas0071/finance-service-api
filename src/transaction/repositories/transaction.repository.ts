@@ -1,45 +1,50 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Card } from '../entities/card.entity';
-import { CreateCardDto } from '../dto/create-card.dto';
+
+import { Transaction } from '../entities/transaction.entity';
+import { CreateTransactionDto } from '../dto/create-transaction.dto';
 
 @Injectable()
 export class TransactionRepository {
   constructor(
-    @InjectRepository(Card)
-    private readonly cardRepository: Repository<Card>,
+    @InjectRepository(Transaction)
+    private readonly transactionRepository: Repository<Transaction>,
   ) {}
 
-  async create(card: CreateCardDto) {
-    return this.cardRepository.save(card);
+  async create(transaction: CreateTransactionDto) {
+    return this.transactionRepository.save(transaction);
   }
 
   async findAll() {
-    return await this.cardRepository.find();
+    return await this.transactionRepository.find({
+      relations: ['card', 'sourceBankAccount', 'destinationBankAccount'],
+    });
   }
 
   async findById(id: string) {
-    return this.cardRepository.findOne({
+    return this.transactionRepository.findOne({
       where: { id },
     });
   }
 
-  async update(id: string, data: Partial<Card>): Promise<Card> {
-    await this.cardRepository.update({ id }, data);
-    const updatedCard = await this.cardRepository.findOneBy({ id });
-    if (!updatedCard) {
+  async update(id: string, data: Partial<Transaction>): Promise<Transaction> {
+    await this.transactionRepository.update({ id }, data);
+    const updatedTransaction = await this.transactionRepository.findOneBy({
+      id,
+    });
+    if (!updatedTransaction) {
       throw new Error('Cartão não encontrado');
     }
-    return updatedCard;
+    return updatedTransaction;
   }
 
   async delete(id: string) {
-    const card = await this.findById(id);
-    if (!card) {
-      throw new NotFoundException('Conta bancária não encontrada!');
+    const transaction = await this.findById(id);
+    if (!transaction) {
+      throw new NotFoundException('Transação não encontrada!');
     }
 
-    await this.cardRepository.remove(card);
+    await this.transactionRepository.remove(transaction);
   }
 }

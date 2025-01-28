@@ -16,22 +16,22 @@ export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @Post()
-  create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.transactionService.create(createTransactionDto);
+  async create(@Body() transaction: CreateTransactionDto) {
+    return this.transactionService.create(transaction);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.transactionService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.transactionService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return this.transactionService.findOne(id);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
@@ -39,7 +39,7 @@ export class TransactionController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.transactionService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return this.transactionService.remove(id);
   }
 }

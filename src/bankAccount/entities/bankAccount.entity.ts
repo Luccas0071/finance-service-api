@@ -10,6 +10,7 @@ import {
 import { ACCOUNT_TYPE } from '../enums/account_type.type';
 import { HOLDER_TYPE } from '../enums/holder_type.type';
 import { Card } from 'src/card/entities/card.entity';
+import { Transaction } from 'src/transaction/entities/transaction.entity';
 
 @Entity()
 export class BankAccount {
@@ -31,8 +32,22 @@ export class BankAccount {
   @Column({ nullable: true })
   description: string;
 
-  @OneToMany(() => Card, (card) => card.bank_account_id, { cascade: true })
+  @OneToMany(() => Card, (card) => card.bankAccount, { cascade: true })
   cards: Card[];
+
+  @OneToMany(
+    () => Transaction,
+    (transaction) => transaction.sourceBankAccount,
+    { cascade: true },
+  )
+  sourceTransactions: Transaction;
+
+  @OneToMany(
+    () => Transaction,
+    (transaction) => transaction.destinationBankAccount,
+    { cascade: true },
+  )
+  destinationTransactions: Transaction;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
