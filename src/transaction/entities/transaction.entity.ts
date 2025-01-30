@@ -30,10 +30,10 @@ export class Transaction {
   @Column({ type: 'float', nullable: true })
   value: number;
 
-  @Column()
+  @Column({ nullable: true, default: 0 })
   period_qty: number;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   @Column({ type: 'enum', enum: TRANSACTION_TYPE, nullable: true })
@@ -42,7 +42,12 @@ export class Transaction {
   @Column({ type: 'enum', enum: TRANSACTION_PERIOD, nullable: true })
   period: TRANSACTION_PERIOD;
 
-  @Column({ type: 'enum', enum: TRANSACTION_SITUATION, nullable: true })
+  @Column({
+    type: 'enum',
+    enum: TRANSACTION_SITUATION,
+    nullable: true,
+    default: TRANSACTION_SITUATION.PENDING,
+  })
   situation: TRANSACTION_SITUATION;
 
   @Column({ type: 'enum', enum: TRANSACTION_METOD, nullable: true })
@@ -64,6 +69,7 @@ export class Transaction {
     (transaction) => transaction.parentTransaction,
     {
       cascade: true,
+      nullable: true,
     },
   )
   childTransactions?: Transaction[];
@@ -71,6 +77,7 @@ export class Transaction {
   @ManyToOne(() => Card, (card) => card.transactions, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
+    nullable: true,
   })
   @JoinColumn({ name: 'card_id' })
   card?: Card;
@@ -81,6 +88,7 @@ export class Transaction {
     {
       onDelete: 'RESTRICT',
       onUpdate: 'CASCADE',
+      nullable: true,
     },
   )
   @JoinColumn({ name: 'source_bank_account_id' })
@@ -92,6 +100,7 @@ export class Transaction {
     {
       onDelete: 'RESTRICT',
       onUpdate: 'CASCADE',
+      nullable: true,
     },
   )
   @JoinColumn({ name: 'destination_bank_account_id' })

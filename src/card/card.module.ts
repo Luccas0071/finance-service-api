@@ -4,6 +4,8 @@ import { Card } from './entities/card.entity';
 import { CardRepository } from './repositories/card.repository';
 import { CardController } from './card.controller';
 import { CardService } from './card.service';
+// import { SqsPublisher } from 'src/clientServer/sqs/sqs.publisher';
+// import { SqsClient } from 'src/clientServer/sqs/sqs.client';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Card])],

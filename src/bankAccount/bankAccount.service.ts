@@ -31,7 +31,6 @@ export class BankAccountService {
   }
 
   async update(id: string, bankAccount: UpdateBankAccountDto) {
-    await this.findById(id);
     return this.bankAccountRepository.update(id, bankAccount);
   }
 

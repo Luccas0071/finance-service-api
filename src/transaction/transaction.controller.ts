@@ -3,9 +3,9 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -30,12 +30,12 @@ export class TransactionController {
     return this.transactionService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateTransactionDto: UpdateTransactionDto,
+    @Body() transaction: UpdateTransactionDto,
   ) {
-    return this.transactionService.update(id, updateTransactionDto);
+    return this.transactionService.update(id, transaction);
   }
 
   @Delete(':id')

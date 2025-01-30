@@ -2,15 +2,22 @@ import { BadRequestException, Inject } from '@nestjs/common';
 import { CreateCardDto } from './dto/create-card.dto';
 import { CardRepository } from './repositories/card.repository';
 import { UpdateCardDto } from './dto/update-card';
+// import { SqsPublisher } from 'src/clientServer/sqs/sqs.publisher';
 
 export class CardService {
   constructor(
     @Inject(CardRepository)
     private readonly cardRepository: CardRepository,
+    // @Inject(SqsPublisher)
+    // private readonly sqsPublisher: SqsPublisher,
   ) {}
 
   async create(card: CreateCardDto) {
     try {
+      // const message = {
+      //   message: 'Cartão criado com sucesso!',
+      // };
+      // this.sqsPublisher.publishMessage(JSON.stringify(message));
       this.cardRepository.create(card);
     } catch (error) {
       console.log(error);

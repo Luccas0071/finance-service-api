@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Transaction } from '../entities/transaction.entity';
 import { CreateTransactionDto } from '../dto/create-transaction.dto';
+import { UpdateTransactionDto } from '../dto/update-transaction.dto';
 
 @Injectable()
 export class TransactionRepository {
@@ -25,16 +26,17 @@ export class TransactionRepository {
   async findById(id: string) {
     return this.transactionRepository.findOne({
       where: { id },
+      relations: ['card', 'sourceBankAccount', 'destinationBankAccount'],
     });
   }
 
-  async update(id: string, data: Partial<Transaction>): Promise<Transaction> {
-    await this.transactionRepository.update({ id }, data);
+  async update(id: string, transaction: UpdateTransactionDto) {
+    await this.transactionRepository.update({ id }, transaction);
     const updatedTransaction = await this.transactionRepository.findOneBy({
       id,
     });
     if (!updatedTransaction) {
-      throw new Error('Cartão não encontrado');
+      throw new Error('Trasação não encontrado');
     }
     return updatedTransaction;
   }

@@ -11,25 +11,22 @@ export class TransactionService {
   ) {}
 
   async create(transaction: CreateTransactionDto) {
-    console.log(transaction);
-    await this.transactionRepository.create(transaction);
-    return 'This action adds a new transaction';
+    return await this.transactionRepository.create(transaction);
   }
 
   async findAll() {
     return await this.transactionRepository.findAll();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} transaction`;
+  async findOne(id: string) {
+    return await this.transactionRepository.findById(id);
   }
 
-  update(id: string, transaction: UpdateTransactionDto) {
-    console.log(transaction);
-    return `This action updates a #${id} transaction`;
+  async update(id: string, transaction: UpdateTransactionDto) {
+    return this.transactionRepository.update(id, transaction);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} transaction`;
+  async remove(id: string) {
+    return await this.transactionRepository.delete(id);
   }
 }
