@@ -9,6 +9,7 @@ import { typeOrmMySqlConfigAsync } from 'src/config/database/mySql/typeorm.mysql
 import { CardModule } from 'src/card/card.module';
 import { AwsSqsModule } from 'src/clientServer/sqs/sqs.module';
 import { TransactionModule } from 'src/transaction/transaction.module';
+import { AuthModule } from 'src/auth/auth.module';
 // import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
@@ -23,6 +24,7 @@ import { TransactionModule } from 'src/transaction/transaction.module';
     CardModule,
     UserModule,
     TransactionModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,3 +1,5 @@
+import { BankAccount } from 'src/bankAccount/entities/bankAccount.entity';
+import { Card } from 'src/card/entities/card.entity';
 import {
   Column,
   CreateDateColumn,
@@ -7,7 +9,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserPermission } from './userPermission.entity';
 
 @Entity()
 export class User {
@@ -29,10 +30,13 @@ export class User {
   @Column({ nullable: true })
   email_verified_at: Date;
 
-  @OneToMany(() => UserPermission, (userPermission) => userPermission.user_id, {
+  @OneToMany(() => Card, (card) => card.user_id, { cascade: true })
+  cards: Card[];
+
+  @OneToMany(() => BankAccount, (bankAccount) => bankAccount.user_id, {
     cascade: true,
   })
-  userPermission: UserPermission;
+  bankAccounts: BankAccount[];
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;

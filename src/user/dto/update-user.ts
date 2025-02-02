@@ -1,15 +1,18 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsOptional, IsNotEmpty, IsEmail, IsString } from 'class-validator';
 
 export class UpdateUserDto {
-  @IsString({ message: 'Nome deve ser uma string' })
-  @IsNotEmpty({ message: 'Nome não pode ser vazio' })
-  name: string;
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty({ message: 'O nome não pode estar vazio' })
+  name?: string;
 
-  @IsString({ message: 'Email deve ser uma string' })
-  @IsNotEmpty({ message: 'Email não pode ser vazia' })
-  email: string;
+  @IsOptional()
+  @IsEmail({}, { message: 'E-mail inválido' })
+  @IsNotEmpty({ message: 'O e-mail não pode estar vazio' })
+  email?: string;
 
-  @IsString({ message: 'Senha inválida' })
-  @IsNotEmpty({ message: 'Senha não pode ser vazia' })
-  password: string;
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty({ message: 'A senha não pode estar vazia' })
+  password?: string;
 }

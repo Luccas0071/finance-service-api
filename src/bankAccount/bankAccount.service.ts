@@ -2,6 +2,7 @@ import { BadRequestException, Inject } from '@nestjs/common';
 import { CreateBankAccountDto } from './dto/create-bank-account.dto';
 import { UpdateBankAccountDto } from './dto/update-bank-account';
 import { BankAccountRepository } from './repositories/bankAccount.repository';
+import { User } from 'src/user/entities/user.entity';
 
 export class BankAccountService {
   constructor(
@@ -9,9 +10,17 @@ export class BankAccountService {
     private readonly bankAccountRepository: BankAccountRepository,
   ) {}
 
-  async create(createBankAccountDto: CreateBankAccountDto) {
+  async create(
+    createBankAccountDto: CreateBankAccountDto,
+    loggedUserId: string,
+  ) {
     try {
-      this.bankAccountRepository.create(createBankAccountDto);
+      const bankAccount = {
+        user_id: { id: String(loggedUserId) } as User,
+        ...createBankAccountDto,
+      };
+
+      return this.bankAccountRepository.create(bankAccount);
     } catch (error) {
       console.log(error);
       throw new BadRequestException('Erro ao criar conta bancária!');

@@ -1,10 +1,15 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { CARD_TYPE } from '../enums/card_type.type';
 import { BankAccount } from 'src/bankAccount/entities/bankAccount.entity';
+import { User } from 'src/user/entities/user.entity';
 
 export class CreateCardDto {
-  id: string;
-
   @IsString()
   @IsNotEmpty()
   identification: string;
@@ -17,7 +22,7 @@ export class CreateCardDto {
   @IsNotEmpty()
   limit: number;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
   due_date: number;
 
@@ -29,4 +34,8 @@ export class CreateCardDto {
   @IsString()
   @IsNotEmpty()
   bank_account_id: BankAccount;
+
+  @IsOptional()
+  @IsString()
+  user_id: User;
 }

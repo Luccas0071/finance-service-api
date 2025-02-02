@@ -6,19 +6,30 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateBankAccountDto } from './dto/create-bank-account.dto';
 import { BankAccountService } from './bankAccount.service';
 import { UpdateBankAccountDto } from './dto/update-bank-account';
 
+import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
+import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
+
+@UseGuards(AuthTokenGuard)
 @Controller('bankAccount')
 export class BankAccountController {
   constructor(private bankAccountService: BankAccountService) {}
 
   @Post()
-  async create(@Body() createBankAccountDto: CreateBankAccountDto) {
-    const response = this.bankAccountService.create(createBankAccountDto);
-    return response;
+  async create(
+    @Body() createBankAccountDto: CreateBankAccountDto,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
+  ) {
+    return this.bankAccountService.create(
+      createBankAccountDto,
+      tokenPayload.sub,
+    );
   }
 
   @Get()

@@ -12,6 +12,7 @@ import {
 import { CARD_TYPE } from '../enums/card_type.type';
 import { BankAccount } from 'src/bankAccount/entities/bankAccount.entity';
 import { Transaction } from 'src/transaction/entities/transaction.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Entity()
 export class Card {
@@ -38,7 +39,14 @@ export class Card {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'bank_account_id' })
-  bankAccount: BankAccount;
+  bank_account_id: BankAccount;
+
+  @ManyToOne(() => User, (user) => user.cards, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'user_id' })
+  user_id: User;
 
   @OneToMany(() => Transaction, (transaction) => transaction.card, {
     cascade: true,

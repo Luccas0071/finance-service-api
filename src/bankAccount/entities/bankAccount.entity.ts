@@ -3,6 +3,8 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -11,6 +13,7 @@ import { ACCOUNT_TYPE } from '../enums/account_type.type';
 import { HOLDER_TYPE } from '../enums/holder_type.type';
 import { Card } from 'src/card/entities/card.entity';
 import { Transaction } from 'src/transaction/entities/transaction.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Entity()
 export class BankAccount {
@@ -32,8 +35,15 @@ export class BankAccount {
   @Column({ nullable: true })
   description: string;
 
-  @OneToMany(() => Card, (card) => card.bankAccount, { cascade: true })
+  @OneToMany(() => Card, (card) => card.bank_account_id, { cascade: true })
   cards: Card[];
+
+  @ManyToOne(() => User, (user) => user.cards, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'user_id' })
+  user_id: User;
 
   @OneToMany(
     () => Transaction,
