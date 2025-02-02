@@ -10,6 +10,7 @@ import { CardModule } from 'src/card/card.module';
 import { AwsSqsModule } from 'src/clientServer/sqs/sqs.module';
 import { TransactionModule } from 'src/transaction/transaction.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { GroupModule } from 'src/group/group.module';
 // import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
@@ -18,13 +19,14 @@ import { AuthModule } from 'src/auth/auth.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync(typeOrmMySqlConfigAsync),
+    AuthModule,
+    UserModule,
+    GroupModule,
     AwsSqsModule,
     // ScheduleModule.forRoot(), //Ativar para rodar buscar as mensagens da fila SQS
     BankAccountModule,
     CardModule,
-    UserModule,
     TransactionModule,
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
