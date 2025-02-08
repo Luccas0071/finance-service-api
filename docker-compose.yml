@@ -4,6 +4,8 @@ services:
       context: .
       dockerfile: Docker/Dockerfile
     container_name: app-service-finance
+    networks:
+      - financialsystems
     restart: always
     volumes:
       - .:/app
@@ -17,11 +19,11 @@ services:
     command: npm run start:dev
 
   mysql:
-    image: mysql
+    image: mysql:8
     container_name: db-service-finance
     restart: always
     volumes:
-      - /opt/mysql_data:/var/lib/mysql
+      - /home/oliveira/Project/volumes-docker/finance-service-api/mysql_data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
@@ -51,6 +53,8 @@ services:
   #   volumes:
   #     - /opt/redis_data:/data
   #   command: ['redis-server', '--appendonly', 'yes']
-# networks:
-#   default:
-#     name: madeiramadeira
+
+networks:
+  financialsystems:
+    external: true
+

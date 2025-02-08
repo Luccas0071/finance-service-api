@@ -11,6 +11,7 @@ import { AwsSqsModule } from 'src/clientServer/sqs/sqs.module';
 import { TransactionModule } from 'src/transaction/transaction.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { GroupModule } from 'src/group/group.module';
+import { InvoiceModule } from 'src/invoice/invoice.module';
 // import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
@@ -27,6 +28,7 @@ import { GroupModule } from 'src/group/group.module';
     BankAccountModule,
     CardModule,
     TransactionModule,
+    InvoiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
