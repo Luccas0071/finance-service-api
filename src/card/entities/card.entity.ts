@@ -38,15 +38,15 @@ export class Card {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'bank_account_id' })
-  bank_account_id: BankAccount;
+  @JoinColumn({ name: 'bankAccount' })
+  bankAccount: BankAccount;
 
   @ManyToOne(() => User, (user) => user.cards, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'user_id' })
-  user_id: User;
+  @JoinColumn({ name: 'user' })
+  user: User;
 
   @OneToMany(() => Transaction, (transaction) => transaction.card, {
     cascade: true,

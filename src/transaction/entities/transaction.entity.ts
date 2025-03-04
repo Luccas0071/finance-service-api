@@ -61,7 +61,7 @@ export class Transaction {
       nullable: true,
     },
   )
-  @JoinColumn({ name: 'transaction_id' })
+  @JoinColumn({ name: 'transaction' })
   parentTransaction?: Transaction;
 
   @OneToMany(
@@ -79,7 +79,7 @@ export class Transaction {
     onUpdate: 'CASCADE',
     nullable: true,
   })
-  @JoinColumn({ name: 'card_id' })
+  @JoinColumn({ name: 'card' })
   card?: Card;
 
   @ManyToOne(
@@ -91,7 +91,7 @@ export class Transaction {
       nullable: true,
     },
   )
-  @JoinColumn({ name: 'source_bank_account_id' })
+  @JoinColumn({ name: 'sourceBankAccount' })
   sourceBankAccount?: BankAccount;
 
   @ManyToOne(
@@ -103,7 +103,7 @@ export class Transaction {
       nullable: true,
     },
   )
-  @JoinColumn({ name: 'destination_bank_account_id' })
+  @JoinColumn({ name: 'destinationBankAccount' })
   destinationBankAccount?: BankAccount;
 
   @CreateDateColumn({ type: 'timestamp' })

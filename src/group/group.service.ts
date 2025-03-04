@@ -5,6 +5,7 @@ import { Group } from './entities/group.entity';
 import { GroupRepository } from './repositories/group.repository';
 import { UpdateGroupDto } from './dto/update-group';
 import { InputAddUserGroup } from './dto/input-add-user-grupo.dto';
+import { InputAddRegistrationGroup } from './dto/input-add-registration-group.dto';
 
 export class GroupService {
   constructor(
@@ -18,11 +19,11 @@ export class GroupService {
   ): Promise<Group> {
     try {
       const group = {
-        user_id: { id: String(loggedUserId) } as User,
+        user: { id: String(loggedUserId) } as User,
         ...createGroupDto,
       };
 
-      return this.groupRepository.create(group);
+      return await this.groupRepository.create(group);
     } catch (error) {
       console.log(error);
       throw new BadRequestException('Erro ao criar grupo!');
@@ -73,5 +74,20 @@ export class GroupService {
     });
 
     return { message: 'Usuário removido do grupo com sucesso' };
+  }
+
+  async addRegistrationGroup(input: InputAddRegistrationGroup) {
+    const { registration, type, groups } = input;
+
+    groups.map(async ({ id }) => {
+      const userGroup = {
+        registration: registration,
+        type: type,
+        group: id,
+      };
+      await this.groupRepository.addRegistrationGroup(userGroup);
+    });
+
+    return { message: 'Registro adicionado ao grupo com sucesso' };
   }
 }

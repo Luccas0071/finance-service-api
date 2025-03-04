@@ -3,9 +3,9 @@ services:
     build:
       context: .
       dockerfile: Docker/Dockerfile
-    container_name: app-service-finance
-    # networks:
-    #   - financialsystems
+    container_name: service-finance-api
+    networks:
+      - financialsystems
     restart: always
     volumes:
       - .:/app
@@ -13,19 +13,19 @@ services:
       - '3000:3000'
     env_file:
       - .env
-    # depends_on:
-    #   - mysql
-    # - mongo
+    depends_on:
+      - mysql
+      # - mongo
     command: npm run start
 
   mysql:
     image: mysql
     container_name: db-service-finance
-    # networks:
-    #   - financialsystems
+    networks:
+      - financialsystems
     restart: always
     volumes:
-      - ./mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
@@ -37,6 +37,8 @@ services:
   # mongo:
   #   image: mongo
   #   container_name: mongo-service-finance
+  #   networks:
+  #     - financialsystems
   #   restart: always
   #   environment:
   #     MONGO_INITDB_ROOT_USERNAME: root
@@ -44,21 +46,26 @@ services:
   #   ports:
   #     - 27017:27017
   #   volumes:
-  #     - /opt/mongo_data:/var/lib/mongo
+  #     - mongo_data:/data/db
 
-  # redis:
-  #   image: redis:latest
-  #   container_name: redis-service-finance
-  #   restart: always
-  #   ports:
-  #     - 6379:6379
-  #   volumes:
-  #     - /opt/redis_data:/data
-  #   command: ['redis-server', '--appendonly', 'yes']
+  redis:
+    image: redis:latest
+    container_name: redis-service-finance
+    networks:
+      - financialsystems
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+    command: ['redis-server', '--appendonly', 'yes']
+
+networks:
+  financialsystems:
+      driver: bridge
+
 volumes:
   mysql_data:
-
-# networks:
-#   financialsystems:
-#       external: true
+  mongo_data:
+  redis_data:
 

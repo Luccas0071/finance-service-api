@@ -33,8 +33,8 @@ export class BankAccountController {
   }
 
   @Get()
-  async findAll() {
-    return this.bankAccountService.findAll();
+  async findAll(@TokenPayloadParam() tokenPayload: TokenPayloadDto) {
+    return this.bankAccountService.findAll(tokenPayload.sub);
   }
 
   @Get(':id')
@@ -46,12 +46,16 @@ export class BankAccountController {
   async update(
     @Param('id') id: string,
     @Body() bankAccount: UpdateBankAccountDto,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
   ) {
-    return this.bankAccountService.update(id, bankAccount);
+    return this.bankAccountService.update(id, bankAccount, tokenPayload.sub);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.bankAccountService.remove(id);
+  async remove(
+    @Param('id') id: string,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
+  ) {
+    return this.bankAccountService.remove(id, tokenPayload.sub);
   }
 }

@@ -16,6 +16,7 @@ import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { InputAddUserGroup } from './dto/input-add-user-grupo.dto';
+import { InputAddRegistrationGroup } from './dto/input-add-registration-group.dto';
 
 @UseGuards(AuthTokenGuard)
 @Controller('group')
@@ -58,5 +59,10 @@ export class GroupController {
   @Post('remove-user-group')
   async removeUserFromGroup(@Body() input: InputAddUserGroup) {
     return this.groupService.removeUserFromGroup(input);
+  }
+
+  @Post('add-registration-group')
+  async addRegistrationGroup(@Body() input: InputAddRegistrationGroup) {
+    return this.groupService.addRegistrationGroup(input);
   }
 }

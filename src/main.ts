@@ -3,6 +3,7 @@ import { AppModule } from './app/app.module';
 import * as crypto from 'crypto';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { GlobalExceptionFilter } from './common/error/globalException.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,6 +24,8 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
+
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
   app.setGlobalPrefix('v1');
 

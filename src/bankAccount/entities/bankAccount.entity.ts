@@ -35,15 +35,15 @@ export class BankAccount {
   @Column({ nullable: true })
   description: string;
 
-  @OneToMany(() => Card, (card) => card.bank_account_id, { cascade: true })
+  @OneToMany(() => Card, (card) => card.bankAccount, { cascade: true })
   cards: Card[];
 
-  @ManyToOne(() => User, (user) => user.cards, {
+  @ManyToOne(() => User, (user) => user.bankAccounts, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'user_id' })
-  user_id: User;
+  @JoinColumn({ name: 'user' })
+  user: User;
 
   @OneToMany(
     () => Transaction,

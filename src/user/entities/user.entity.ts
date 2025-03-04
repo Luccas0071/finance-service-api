@@ -36,13 +36,13 @@ export class User {
   @OneToMany(() => group_user, (groupUser) => groupUser.user)
   groupUsers: group_user[];
 
-  @OneToMany(() => Card, (card) => card.user_id, { cascade: true })
+  @OneToMany(() => Card, (card) => card.user, { cascade: true })
   cards: Card[];
 
-  @OneToMany(() => Group, (group) => group.user_id, { cascade: true })
+  @OneToMany(() => Group, (group) => group.user, { cascade: true })
   groups: Group[];
 
-  @OneToMany(() => BankAccount, (bankAccount) => bankAccount.user_id, {
+  @OneToMany(() => BankAccount, (bankAccount) => bankAccount.user, {
     cascade: true,
   })
   bankAccounts: BankAccount[];

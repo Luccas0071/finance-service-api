@@ -6,24 +6,25 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from 'src/user/entities/user.entity';
 import { Group } from './group.entity';
+import { REGISTRATION_TYPE } from '../enums/registration_type.enum';
 
 @Entity()
-export class group_user {
+export class group_registration {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Group, (group) => group.groupUsers, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Group, (group) => group.groupRegistration, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'group' })
   group: Group;
 
-  @ManyToOne(() => User, (user) => user.groupUsers, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user' })
-  user: User;
+  @Column()
+  registration: string;
 
-  @Column({ default: false })
-  owner: boolean;
+  @Column({ type: 'enum', enum: REGISTRATION_TYPE, nullable: false })
+  type: REGISTRATION_TYPE;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;

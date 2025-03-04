@@ -3,6 +3,8 @@ import { Repository } from 'typeorm';
 import { CreateBankAccountDto } from '../dto/create-bank-account.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BankAccount } from '../entities/bankAccount.entity';
+import { REGISTRATION_TYPE } from 'src/group/enums/registration_type.enum';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class BankAccountRepository {
@@ -15,15 +17,40 @@ export class BankAccountRepository {
     return await this.bankAccountRepository.save(bankAccount);
   }
 
-  async findAll() {
-    return await this.bankAccountRepository.find({ relations: ['cards'] });
+  async findAll(loggedUserId: string, type: REGISTRATION_TYPE) {
+    return await this.bankAccountRepository
+      .createQueryBuilder('bank_account')
+      .leftJoinAndSelect('bank_account.cards', 'cards')
+      .leftJoin('bank_account.user', 'owner')
+      .addSelect(['owner.id', 'owner.name'])
+      .leftJoin(
+        'group_registration',
+        'gr',
+        'gr.registration = bank_account.id AND gr.type = :type',
+        { type },
+      )
+      .leftJoin('group_user', 'gu', 'gu.group = gr.group')
+      .where('bank_account.user = :userId', { userId: loggedUserId })
+      .orWhere('gu.user = :userId', { userId: loggedUserId })
+      .getMany();
   }
 
   async findById(id: string) {
-    return await this.bankAccountRepository.findOne({
+    const bankAccount = await this.bankAccountRepository.findOne({
       where: { id },
-      relations: ['cards'],
+      relations: ['cards', 'user'],
     });
+
+    if (!bankAccount) {
+      return null;
+    }
+
+    return {
+      ...bankAccount,
+      user: bankAccount.user
+        ? ({ id: bankAccount.user.id, name: bankAccount.user.name } as User)
+        : null,
+    };
   }
 
   async update(id: string, data: Partial<BankAccount>) {

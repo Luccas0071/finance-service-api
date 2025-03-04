@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Group } from '../entities/group.entity';
 import { CreateGroupDto } from '../dto/create-group.dto';
 import { group_user } from '../entities/group-user.entity';
+import { group_registration } from '../entities/group-registration.entity';
 
 @Injectable()
 export class GroupRepository {
@@ -12,10 +13,28 @@ export class GroupRepository {
     private readonly groupRepository: Repository<Group>,
     @InjectRepository(group_user)
     private readonly groupUserRepository: Repository<group_user>,
+    @InjectRepository(group_registration)
+    private readonly groupRegistrationRepository: Repository<group_registration>,
+
+    private readonly dataSource: DataSource,
   ) {}
 
-  async create(group: CreateGroupDto) {
-    return this.groupRepository.save(group);
+  async create(createGroupDto: CreateGroupDto) {
+    return this.dataSource.transaction(async (manager) => {
+      const group = this.groupRepository.create({
+        ...createGroupDto,
+      });
+      const savedGroup = await manager.save(group);
+
+      const userGroup = this.groupUserRepository.create({
+        user: { id: savedGroup.user.id },
+        group: savedGroup,
+        owner: true,
+      });
+      await manager.save(userGroup);
+
+      return savedGroup;
+    });
   }
 
   async findAll() {
@@ -38,6 +57,7 @@ export class GroupRepository {
       users: group.groupUsers.map((gu) => ({
         id: gu.user.id,
         name: gu.user.name,
+        owner: gu.owner,
       })),
     };
   }
@@ -79,5 +99,9 @@ export class GroupRepository {
     await this.groupUserRepository.remove(userGroup);
 
     return true;
+  }
+
+  async addRegistrationGroup(groupRegistration: any) {
+    return this.groupRegistrationRepository.save(groupRegistration);
   }
 }

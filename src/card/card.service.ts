@@ -34,7 +34,7 @@ export class CardService {
       // this.sqsPublisher.publishMessage(JSON.stringify(message));
 
       const card = {
-        user_id: { id: String(loggedUserId) } as User,
+        user: { id: String(loggedUserId) } as User,
         ...createCardDto,
       };
 
